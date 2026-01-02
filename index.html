@@ -1,0 +1,1362 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="CasaEnOrden: la herramienta sencilla de mantenimiento del hogar. Evita averías, controla gastos y mantén tu vivienda al día con checklists y recordatorios.">
+    <meta name="keywords" content="mantenimiento del hogar, evitar averías, checklist vivienda, gastos del hogar, mantenimiento preventivo, revisar casa">
+    <meta name="author" content="CasaEnOrden">
+    <meta name="robots" content="index, follow">
+    
+    <!-- Open Graph -->
+    <meta property="og:title" content="CasaEnOrden - Mantén tu casa al día sin complicaciones">
+    <meta property="og:description" content="La herramienta sencilla para el mantenimiento preventivo del hogar. Evita averías y gastos innecesarios.">
+    <meta property="og:type" content="website">
+    <meta property="og:locale" content="es_ES">
+    
+    <title>CasaEnOrden | Mantenimiento del hogar sencillo y preventivo</title>
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='20' fill='%232563eb'/%3E%3Cpath d='M50 20L20 45v35a5 5 0 005 5h50a5 5 0 005-5V45L50 20z' fill='none' stroke='white' stroke-width='6' stroke-linecap='round' stroke-linejoin='round'/%3E%3Cpath d='M40 85V55h20v30' fill='none' stroke='white' stroke-width='6' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
+    <style>
+        /* Reset & Base */
+        *, *::before, *::after {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --color-primary: #2563eb;
+            --color-primary-hover: #1d4ed8;
+            --color-text: #1f2937;
+            --color-text-light: #6b7280;
+            --color-bg: #ffffff;
+            --color-bg-soft: #f9fafb;
+            --color-border: #e5e7eb;
+            --color-success: #10b981;
+            --color-accent: #fbbf24;
+            --font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            --max-width: 1120px;
+            --spacing-xs: 0.5rem;
+            --spacing-sm: 1rem;
+            --spacing-md: 1.5rem;
+            --spacing-lg: 2rem;
+            --spacing-xl: 3rem;
+            --spacing-2xl: 5rem;
+            --radius: 12px;
+            --radius-sm: 8px;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: var(--font-family);
+            font-size: 16px;
+            line-height: 1.6;
+            color: var(--color-text);
+            background-color: var(--color-bg);
+            -webkit-font-smoothing: antialiased;
+        }
+
+        /* Container */
+        .container {
+            width: 100%;
+            max-width: var(--max-width);
+            margin: 0 auto;
+            padding: 0 var(--spacing-md);
+        }
+
+        /* Typography */
+        h1, h2, h3 {
+            line-height: 1.2;
+            font-weight: 600;
+        }
+
+        h1 {
+            font-size: clamp(2rem, 5vw, 3.25rem);
+            letter-spacing: -0.02em;
+        }
+
+        h2 {
+            font-size: clamp(1.5rem, 4vw, 2.25rem);
+            letter-spacing: -0.01em;
+        }
+
+        h3 {
+            font-size: 1.25rem;
+        }
+
+        p {
+            color: var(--color-text-light);
+        }
+
+        /* Buttons */
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: var(--spacing-xs);
+            padding: 0.875rem 1.75rem;
+            font-size: 1rem;
+            font-weight: 500;
+            text-decoration: none;
+            border-radius: var(--radius);
+            border: none;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .btn-primary {
+            background-color: var(--color-primary);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background-color: var(--color-primary-hover);
+            transform: translateY(-1px);
+        }
+
+        .btn-secondary {
+            background-color: var(--color-bg-soft);
+            color: var(--color-text);
+            border: 1px solid var(--color-border);
+        }
+
+        .btn-secondary:hover {
+            background-color: var(--color-border);
+        }
+
+        /* Header / Nav */
+        .header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid var(--color-border);
+            z-index: 100;
+        }
+
+        .nav {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            height: 64px;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-xs);
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: var(--color-text);
+            text-decoration: none;
+        }
+
+        .logo-icon {
+            width: 32px;
+            height: 32px;
+            background: var(--color-primary);
+            border-radius: var(--radius-sm);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1rem;
+        }
+
+        .nav-cta {
+            padding: 0.625rem 1.25rem;
+            font-size: 0.875rem;
+        }
+
+        /* Hero Section */
+        .hero {
+            padding: calc(64px + var(--spacing-2xl)) 0 var(--spacing-2xl);
+            text-align: center;
+        }
+
+        .hero-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: var(--spacing-xs);
+            padding: 0.5rem 1rem;
+            background: var(--color-bg-soft);
+            border: 1px solid var(--color-border);
+            border-radius: 50px;
+            font-size: 0.875rem;
+            color: var(--color-text-light);
+            margin-bottom: var(--spacing-lg);
+        }
+
+        .hero-badge-dot {
+            width: 8px;
+            height: 8px;
+            background: var(--color-success);
+            border-radius: 50%;
+        }
+
+        .hero h1 {
+            margin-bottom: var(--spacing-md);
+            max-width: 720px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .hero-subtitle {
+            font-size: clamp(1.125rem, 2.5vw, 1.375rem);
+            max-width: 560px;
+            margin: 0 auto var(--spacing-xl);
+            color: var(--color-text-light);
+        }
+
+        .hero-cta-group {
+            display: flex;
+            flex-direction: column;
+            gap: var(--spacing-sm);
+            align-items: center;
+        }
+
+        .hero-note {
+            font-size: 0.875rem;
+            color: var(--color-text-light);
+            margin-top: var(--spacing-sm);
+        }
+
+        @media (min-width: 640px) {
+            .hero-cta-group {
+                flex-direction: row;
+                justify-content: center;
+            }
+        }
+
+        /* Section Base */
+        .section {
+            padding: var(--spacing-2xl) 0;
+        }
+
+        .section-header {
+            text-align: center;
+            max-width: 640px;
+            margin: 0 auto var(--spacing-xl);
+        }
+
+        .section-header p {
+            margin-top: var(--spacing-sm);
+            font-size: 1.125rem;
+        }
+
+        .section-label {
+            display: inline-block;
+            font-size: 0.875rem;
+            font-weight: 500;
+            color: var(--color-primary);
+            margin-bottom: var(--spacing-sm);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        /* Problem Section */
+        .problem {
+            background: var(--color-bg-soft);
+        }
+
+        .problem-grid {
+            display: grid;
+            gap: var(--spacing-lg);
+        }
+
+        .problem-card {
+            background: white;
+            padding: var(--spacing-lg);
+            border-radius: var(--radius);
+            border: 1px solid var(--color-border);
+        }
+
+        .problem-icon {
+            width: 48px;
+            height: 48px;
+            background: #fef3c7;
+            border-radius: var(--radius-sm);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            margin-bottom: var(--spacing-sm);
+        }
+
+        .problem-card h3 {
+            margin-bottom: var(--spacing-xs);
+        }
+
+        @media (min-width: 768px) {
+            .problem-grid {
+                grid-template-columns: repeat(3, 1fr);
+            }
+        }
+
+        /* Features Section */
+        .features-grid {
+            display: grid;
+            gap: var(--spacing-md);
+        }
+
+        .feature-card {
+            padding: var(--spacing-lg);
+            border-radius: var(--radius);
+            border: 1px solid var(--color-border);
+            transition: border-color 0.2s ease;
+        }
+
+        .feature-card:hover {
+            border-color: var(--color-primary);
+        }
+
+        .feature-icon {
+            width: 44px;
+            height: 44px;
+            background: #dbeafe;
+            border-radius: var(--radius-sm);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.25rem;
+            margin-bottom: var(--spacing-sm);
+        }
+
+        .feature-card h3 {
+            margin-bottom: var(--spacing-xs);
+        }
+
+        @media (min-width: 640px) {
+            .features-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (min-width: 1024px) {
+            .features-grid {
+                grid-template-columns: repeat(3, 1fr);
+            }
+        }
+
+        /* Audience Section */
+        .audience {
+            background: var(--color-bg-soft);
+        }
+
+        .audience-grid {
+            display: grid;
+            gap: var(--spacing-lg);
+        }
+
+        .audience-card {
+            display: flex;
+            align-items: flex-start;
+            gap: var(--spacing-md);
+            background: white;
+            padding: var(--spacing-lg);
+            border-radius: var(--radius);
+            border: 1px solid var(--color-border);
+        }
+
+        .audience-icon {
+            width: 52px;
+            height: 52px;
+            min-width: 52px;
+            background: #ecfdf5;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+        }
+
+        .audience-card h3 {
+            margin-bottom: var(--spacing-xs);
+        }
+
+        @media (min-width: 768px) {
+            .audience-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        /* Pricing Section */
+        .pricing-grid {
+            display: grid;
+            gap: var(--spacing-lg);
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .pricing-card {
+            padding: var(--spacing-xl);
+            border-radius: var(--radius);
+            border: 1px solid var(--color-border);
+            background: white;
+        }
+
+        .pricing-card.featured {
+            border: 2px solid var(--color-primary);
+            position: relative;
+        }
+
+        .pricing-badge {
+            position: absolute;
+            top: -12px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: var(--color-primary);
+            color: white;
+            padding: 0.375rem 1rem;
+            border-radius: 50px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .pricing-header {
+            text-align: center;
+            margin-bottom: var(--spacing-lg);
+            padding-bottom: var(--spacing-lg);
+            border-bottom: 1px solid var(--color-border);
+        }
+
+        .pricing-name {
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin-bottom: var(--spacing-xs);
+        }
+
+        .pricing-price {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--color-text);
+        }
+
+        .pricing-price span {
+            font-size: 1rem;
+            font-weight: 400;
+            color: var(--color-text-light);
+        }
+
+        .pricing-desc {
+            font-size: 0.9375rem;
+            margin-top: var(--spacing-xs);
+        }
+
+        .pricing-features {
+            list-style: none;
+            margin-bottom: var(--spacing-lg);
+        }
+
+        .pricing-features li {
+            display: flex;
+            align-items: flex-start;
+            gap: var(--spacing-sm);
+            padding: var(--spacing-xs) 0;
+            font-size: 0.9375rem;
+        }
+
+        .pricing-features li::before {
+            content: "✓";
+            color: var(--color-success);
+            font-weight: 600;
+            min-width: 20px;
+        }
+
+        .pricing-card .btn {
+            width: 100%;
+        }
+
+        .pricing-note {
+            text-align: center;
+            font-size: 0.875rem;
+            margin-top: var(--spacing-sm);
+            color: var(--color-text-light);
+        }
+
+        @media (min-width: 768px) {
+            .pricing-grid {
+                grid-template-columns: repeat(2, 1fr);
+                align-items: start;
+            }
+        }
+
+        /* CTA Final */
+        .cta-final {
+            background: linear-gradient(135deg, #1e3a8a 0%, #2563eb 100%);
+            color: white;
+            text-align: center;
+        }
+
+        .cta-final h2 {
+            color: white;
+            margin-bottom: var(--spacing-sm);
+        }
+
+        .cta-final p {
+            color: rgba(255, 255, 255, 0.85);
+            font-size: 1.125rem;
+            max-width: 520px;
+            margin: 0 auto var(--spacing-lg);
+        }
+
+        .cta-final .btn-primary {
+            background: white;
+            color: var(--color-primary);
+        }
+
+        .cta-final .btn-primary:hover {
+            background: var(--color-bg-soft);
+        }
+
+        /* Footer */
+        .footer {
+            padding: var(--spacing-xl) 0;
+            border-top: 1px solid var(--color-border);
+            text-align: center;
+        }
+
+        .footer p {
+            font-size: 0.875rem;
+        }
+
+        .footer-links {
+            display: flex;
+            justify-content: center;
+            gap: var(--spacing-lg);
+            margin-top: var(--spacing-sm);
+        }
+
+        .footer-links a {
+            font-size: 0.875rem;
+            color: var(--color-text-light);
+            text-decoration: none;
+        }
+
+        .footer-links a:hover {
+            color: var(--color-primary);
+        }
+
+        /* Utilities */
+        .text-center {
+            text-align: center;
+        }
+
+        /* Register Form */
+        .register-box {
+            display: grid;
+            gap: var(--spacing-xl);
+            max-width: 900px;
+            margin: 0 auto;
+            background: white;
+            border: 1px solid var(--color-border);
+            border-radius: var(--radius);
+            padding: var(--spacing-xl);
+        }
+
+        @media (min-width: 768px) {
+            .register-box {
+                grid-template-columns: 1fr 1fr;
+                align-items: start;
+            }
+        }
+
+        .register-form {
+            display: flex;
+            flex-direction: column;
+            gap: var(--spacing-md);
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: var(--spacing-xs);
+        }
+
+        .form-group label {
+            font-size: 0.875rem;
+            font-weight: 500;
+            color: var(--color-text);
+        }
+
+        .form-group input {
+            padding: 0.875rem 1rem;
+            font-size: 1rem;
+            border: 1px solid var(--color-border);
+            border-radius: var(--radius-sm);
+            background: var(--color-bg);
+            transition: border-color 0.2s ease, box-shadow 0.2s ease;
+            font-family: inherit;
+        }
+
+        .form-group input:focus {
+            outline: none;
+            border-color: var(--color-primary);
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+        }
+
+        .form-group input::placeholder {
+            color: #9ca3af;
+        }
+
+        .btn-full {
+            width: 100%;
+        }
+
+        .form-note {
+            font-size: 0.8125rem;
+            color: var(--color-text-light);
+            text-align: center;
+        }
+
+        .form-note a {
+            color: var(--color-primary);
+            text-decoration: none;
+        }
+
+        .form-note a:hover {
+            text-decoration: underline;
+        }
+
+        .register-benefits {
+            padding: var(--spacing-lg);
+            background: var(--color-bg-soft);
+            border-radius: var(--radius-sm);
+        }
+
+        .register-benefits h3 {
+            font-size: 1.125rem;
+            margin-bottom: var(--spacing-md);
+        }
+
+        .register-benefits ul {
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: var(--spacing-sm);
+        }
+
+        .register-benefits li {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-sm);
+            font-size: 0.9375rem;
+            color: var(--color-text);
+        }
+
+        .pricing-section {
+            background: var(--color-bg-soft);
+        }
+
+        /* Testimonials */
+        .testimonials-section {
+            background: var(--color-bg);
+        }
+
+        .testimonials-grid {
+            display: grid;
+            gap: var(--spacing-lg);
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        @media (min-width: 768px) {
+            .testimonials-grid {
+                grid-template-columns: repeat(3, 1fr);
+            }
+        }
+
+        .testimonial-card {
+            background: var(--color-bg-soft);
+            border-radius: var(--radius);
+            padding: var(--spacing-lg);
+            display: flex;
+            flex-direction: column;
+            gap: var(--spacing-md);
+        }
+
+        .testimonial-text {
+            font-size: 0.9375rem;
+            line-height: 1.7;
+            color: var(--color-text);
+            font-style: italic;
+        }
+
+        .testimonial-author {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-sm);
+            margin-top: auto;
+        }
+
+        .testimonial-avatar {
+            width: 40px;
+            height: 40px;
+            background: var(--color-primary);
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            font-size: 0.875rem;
+        }
+
+        .testimonial-name {
+            display: block;
+            font-weight: 500;
+            font-size: 0.875rem;
+            color: var(--color-text);
+        }
+
+        .testimonial-role {
+            display: block;
+            font-size: 0.8125rem;
+            color: var(--color-text-light);
+        }
+
+        /* FAQ Section */
+        .faq-section {
+            background: var(--color-bg);
+        }
+
+        .faq-list {
+            max-width: 720px;
+            margin: 0 auto;
+            display: flex;
+            flex-direction: column;
+            gap: var(--spacing-sm);
+        }
+
+        .faq-item {
+            background: white;
+            border: 1px solid var(--color-border);
+            border-radius: var(--radius-sm);
+            overflow: hidden;
+            transition: border-color 0.2s ease;
+        }
+
+        .faq-item:hover {
+            border-color: var(--color-primary);
+        }
+
+        .faq-item[open] {
+            border-color: var(--color-primary);
+        }
+
+        .faq-question {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: var(--spacing-sm);
+            padding: var(--spacing-md) var(--spacing-lg);
+            cursor: pointer;
+            font-weight: 500;
+            font-size: 1rem;
+            color: var(--color-text);
+            list-style: none;
+        }
+
+        .faq-question::-webkit-details-marker {
+            display: none;
+        }
+
+        .faq-question span {
+            flex: 1;
+        }
+
+        .faq-icon {
+            color: var(--color-text-light);
+            transition: transform 0.2s ease;
+            flex-shrink: 0;
+        }
+
+        .faq-item[open] .faq-icon {
+            transform: rotate(180deg);
+        }
+
+        .faq-answer {
+            padding: 0 var(--spacing-lg) var(--spacing-lg);
+        }
+
+        .faq-answer p {
+            font-size: 0.9375rem;
+            line-height: 1.7;
+            color: var(--color-text-light);
+        }
+
+        /* Ad placeholder - versión gratuita */
+        .ad-placeholder {
+            background: var(--color-bg-soft);
+            border: 1px dashed var(--color-border);
+            border-radius: var(--radius-sm);
+            padding: var(--spacing-sm);
+            text-align: center;
+            font-size: 0.75rem;
+            color: var(--color-text-light);
+            margin: var(--spacing-lg) 0;
+            max-width: 728px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        /* Smooth animations */
+        @media (prefers-reduced-motion: no-preference) {
+            .feature-card,
+            .problem-card,
+            .audience-card,
+            .pricing-card {
+                transition: transform 0.2s ease, box-shadow 0.2s ease;
+            }
+
+            .feature-card:hover,
+            .problem-card:hover,
+            .audience-card:hover {
+                transform: translateY(-2px);
+                box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Header -->
+    <header class="header">
+        <nav class="nav container">
+            <a href="#" class="logo">
+                <span class="logo-icon">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+                        <polyline points="9 22 9 12 15 12 15 22"></polyline>
+                    </svg>
+                </span>
+                CasaEnOrden
+            </a>
+            <a href="#empezar" class="btn btn-primary nav-cta">Empezar gratis</a>
+        </nav>
+    </header>
+
+    <!-- Hero -->
+    <section class="hero">
+        <div class="container">
+            <div class="hero-badge">
+                <span class="hero-badge-dot"></span>
+                Mantenimiento preventivo del hogar
+            </div>
+            
+            <h1>Mantén tu casa al día y evita averías innecesarias</h1>
+            
+            <p class="hero-subtitle">
+                La herramienta sencilla que te dice qué revisar, cuándo hacerlo y cuánto puede costarte. Sin complicaciones.
+            </p>
+            
+            <div class="hero-cta-group">
+                <a href="#empezar" class="btn btn-primary">Empezar gratis</a>
+                <a href="#como-funciona" class="btn btn-secondary">Ver cómo funciona</a>
+            </div>
+            
+            <p class="hero-note">Crea tu cuenta en menos de 1 minuto</p>
+        </div>
+    </section>
+
+    <!-- Por qué existe -->
+    <section class="section problem">
+        <div class="container">
+            <div class="section-header">
+                <span class="section-label">El problema real</span>
+                <h2>La mayoría de averías en casa se pueden prevenir</h2>
+                <p>Pero nadie nos enseña qué revisar, cuándo hacerlo ni por dónde empezar. Y cuando algo falla, ya es tarde.</p>
+            </div>
+            
+            <div class="problem-grid">
+                <div class="problem-card">
+                    <div class="problem-icon">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#d97706" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <line x1="12" y1="1" x2="12" y2="23"></line>
+                            <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path>
+                        </svg>
+                    </div>
+                    <h3>Gastos que no esperabas</h3>
+                    <p>Una caldera sin revisar, una fuga silenciosa... Los pequeños descuidos terminan costando cientos de euros.</p>
+                </div>
+                
+                <div class="problem-card">
+                    <div class="problem-icon">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#d97706" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <circle cx="12" cy="12" r="10"></circle>
+                            <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"></path>
+                            <line x1="12" y1="17" x2="12.01" y2="17"></line>
+                        </svg>
+                    </div>
+                    <h3>No sabes por dónde empezar</h3>
+                    <p>¿Cada cuánto hay que revisar el termo? ¿Y los grifos? Sin una guía clara, es normal dejarlo para después.</p>
+                </div>
+                
+                <div class="problem-card">
+                    <div class="problem-icon">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#d97706" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <circle cx="12" cy="12" r="10"></circle>
+                            <polyline points="12 6 12 12 16 14"></polyline>
+                        </svg>
+                    </div>
+                    <h3>Se te olvida y pasa el tiempo</h3>
+                    <p>Entre el trabajo y el día a día, el mantenimiento del hogar queda siempre en segundo plano.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Qué hace exactamente -->
+    <section class="section" id="como-funciona">
+        <div class="container">
+            <div class="section-header">
+                <span class="section-label">Cómo funciona</span>
+                <h2>Todo lo que necesitas para mantener tu vivienda al día</h2>
+                <p>Un checklist claro de mantenimiento del hogar, adaptado a tu vivienda y sin complicaciones técnicas.</p>
+            </div>
+            
+            <div class="features-grid">
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#2563eb" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+                            <polyline points="9 22 9 12 15 12 15 22"></polyline>
+                        </svg>
+                    </div>
+                    <h3>Configura tu vivienda</h3>
+                    <p>Indica el tipo de vivienda, año aproximado, metros y uso. Solo tardas un minuto.</p>
+                </div>
+                
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#2563eb" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"></path>
+                            <rect x="8" y="2" width="8" height="4" rx="1" ry="1"></rect>
+                            <line x1="8" y1="10" x2="16" y2="10"></line>
+                            <line x1="8" y1="14" x2="16" y2="14"></line>
+                            <line x1="8" y1="18" x2="12" y2="18"></line>
+                        </svg>
+                    </div>
+                    <h3>Qué revisar</h3>
+                    <p>Una lista clara con todo lo que necesita atención en tu hogar. Sin tecnicismos, fácil de entender.</p>
+                </div>
+                
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#2563eb" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+                            <line x1="16" y1="2" x2="16" y2="6"></line>
+                            <line x1="8" y1="2" x2="8" y2="6"></line>
+                            <line x1="3" y1="10" x2="21" y2="10"></line>
+                            <path d="M8 14h.01"></path>
+                            <path d="M12 14h.01"></path>
+                            <path d="M16 14h.01"></path>
+                            <path d="M8 18h.01"></path>
+                            <path d="M12 18h.01"></path>
+                        </svg>
+                    </div>
+                    <h3>Cuándo revisar</h3>
+                    <p>Te indicamos la frecuencia recomendada: mensual, trimestral o anual. Tú decides cuándo actuar.</p>
+                </div>
+                
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#2563eb" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <circle cx="12" cy="12" r="10"></circle>
+                            <path d="M14.5 9.5a3 3 0 0 0-5 0"></path>
+                            <path d="M9.5 14.5a3 3 0 0 0 5 0"></path>
+                            <line x1="9" y1="12" x2="15" y2="12"></line>
+                        </svg>
+                    </div>
+                    <h3>Coste estimado</h3>
+                    <p>Orientación sobre cuánto puede costarte cada revisión o mantenimiento. Para que no haya sorpresas.</p>
+                </div>
+                
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#2563eb" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M9 11l3 3L22 4"></path>
+                            <path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"></path>
+                        </svg>
+                    </div>
+                    <h3>Checklist mensual y anual</h3>
+                    <p>Organiza las tareas de mantenimiento preventivo con checklists prácticos que puedes ir marcando.</p>
+                </div>
+                
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#2563eb" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <circle cx="12" cy="12" r="10"></circle>
+                            <circle cx="12" cy="12" r="6"></circle>
+                            <circle cx="12" cy="12" r="2"></circle>
+                        </svg>
+                    </div>
+                    <h3>Nivel de prioridad</h3>
+                    <p>Cada tarea tiene su nivel: Bajo, Medio o Alto. Así sabes qué es urgente y qué puede esperar.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Para quién es -->
+    <section class="section audience">
+        <div class="container">
+            <div class="section-header">
+                <span class="section-label">Para quién es</span>
+                <h2>Si vives en una casa o piso, esto te interesa</h2>
+                <p>No hace falta ser manitas ni experto. CasaEnOrden está pensado para personas normales que quieren evitar problemas.</p>
+            </div>
+            
+            <div class="audience-grid">
+                <div class="audience-card">
+                    <div class="audience-icon">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#059669" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+                            <polyline points="9 22 9 12 15 12 15 22"></polyline>
+                        </svg>
+                    </div>
+                    <div>
+                        <h3>Propietarios de vivienda</h3>
+                        <p>Protege tu inversión y evita gastos del hogar inesperados con un mantenimiento preventivo sencillo.</p>
+                    </div>
+                </div>
+                
+                <div class="audience-card">
+                    <div class="audience-icon">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#059669" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M21 2l-2 2m-7.61 7.61a5.5 5.5 0 1 1-7.778 7.778 5.5 5.5 0 0 1 7.777-7.777zm0 0L15.5 7.5m0 0l3 3L22 7l-3-3m-3.5 3.5L19 4"></path>
+                        </svg>
+                    </div>
+                    <div>
+                        <h3>Inquilinos responsables</h3>
+                        <p>Cuida el piso donde vives y evita sorpresas desagradables. Saber qué revisar también es tu responsabilidad.</p>
+                    </div>
+                </div>
+                
+                <div class="audience-card">
+                    <div class="audience-icon">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#059669" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <rect x="4" y="2" width="16" height="20" rx="2" ry="2"></rect>
+                            <line x1="9" y1="6" x2="9" y2="6.01"></line>
+                            <line x1="15" y1="6" x2="15" y2="6.01"></line>
+                            <line x1="9" y1="10" x2="9" y2="10.01"></line>
+                            <line x1="15" y1="10" x2="15" y2="10.01"></line>
+                            <line x1="9" y1="14" x2="9" y2="14.01"></line>
+                            <line x1="15" y1="14" x2="15" y2="14.01"></line>
+                            <path d="M9 18h6v4H9z"></path>
+                        </svg>
+                    </div>
+                    <div>
+                        <h3>Propietarios con pisos en alquiler</h3>
+                        <p>Mantén tus propiedades en buen estado y reduce reparaciones de emergencia con un seguimiento básico.</p>
+                    </div>
+                </div>
+                
+                <div class="audience-card">
+                    <div class="audience-icon">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#059669" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+                            <polyline points="9 12 11 14 15 10"></polyline>
+                        </svg>
+                    </div>
+                    <div>
+                        <h3>Personas previsoras</h3>
+                        <p>Si te gusta tener las cosas bajo control y evitar imprevistos, esta herramienta es para ti.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Testimonios -->
+    <section class="section testimonials-section">
+        <div class="container">
+            <div class="section-header">
+                <span class="section-label">Usuarios reales</span>
+                <h2>Lo que dicen quienes ya lo usan</h2>
+            </div>
+            
+            <div class="testimonials-grid">
+                <div class="testimonial-card">
+                    <p class="testimonial-text">"Llevo años sin saber cuándo tocar la caldera. Ahora al menos sé cuándo llamar al técnico."</p>
+                    <div class="testimonial-author">
+                        <div class="testimonial-avatar">M</div>
+                        <div>
+                            <span class="testimonial-name">Marta L.</span>
+                            <span class="testimonial-role">Propietaria en Valencia</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="testimonial-card">
+                    <p class="testimonial-text">"No es magia, pero te organiza. Yo iba dejando todo para luego y ahora tengo un poco más de control."</p>
+                    <div class="testimonial-author">
+                        <div class="testimonial-avatar">R</div>
+                        <div>
+                            <span class="testimonial-name">Raúl G.</span>
+                            <span class="testimonial-role">Inquilino en Madrid</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="testimonial-card">
+                    <p class="testimonial-text">"Lo uso para los dos pisos que tengo alquilados. Me ayuda a no olvidarme de revisar las cosas básicas."</p>
+                    <div class="testimonial-author">
+                        <div class="testimonial-avatar">C</div>
+                        <div>
+                            <span class="testimonial-name">Carmen S.</span>
+                            <span class="testimonial-role">Propietaria de pisos en alquiler</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Registro -->
+    <section class="section" id="empezar">
+        <div class="container">
+            <div class="section-header">
+                <span class="section-label">Crea tu cuenta</span>
+                <h2>Empieza a cuidar tu hogar hoy</h2>
+                <p>Regístrate gratis y accede a tu plan de mantenimiento personalizado.</p>
+            </div>
+            
+            <!-- Formulario de registro -->
+            <div class="register-box">
+                <form class="register-form" id="registerForm" action="https://formspree.io/f/mrebqpbb" method="POST">
+                    <input type="hidden" name="_next" value="gracias.html">
+                    <input type="hidden" name="_subject" value="Nuevo registro en CasaEnOrden">
+                    <div class="form-group">
+                        <label for="nombre">Nombre</label>
+                        <input type="text" id="nombre" name="nombre" placeholder="Tu nombre" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="email">Email</label>
+                        <input type="email" id="email" name="email" placeholder="tu@email.com" required>
+                    </div>
+                    <button type="submit" class="btn btn-primary btn-full">Empezar gratis</button>
+                    <p class="form-note">Al registrarte aceptas nuestros <a href="terminos.html">términos de uso</a> y <a href="privacidad.html">política de privacidad</a>.</p>
+                </form>
+                <div class="register-benefits">
+                    <h3>Con tu cuenta gratuita tendrás:</h3>
+                    <ul>
+                        <li>
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                            Configurador de vivienda personalizado
+                        </li>
+                        <li>
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                            Qué revisar y cuándo hacerlo
+                        </li>
+                        <li>
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                            Coste estimado de cada tarea
+                        </li>
+                        <li>
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                            Checklist mensual y anual
+                        </li>
+                        <li>
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                            Niveles de prioridad claros
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Pricing -->
+    <section class="section pricing-section">
+        <div class="container">
+            <div class="section-header">
+                <span class="section-label">Planes</span>
+                <h2>Elige tu plan</h2>
+                <p>Sin suscripciones. Sin compromisos. Pago único si decides dar el paso a PRO.</p>
+            </div>
+            
+            <div class="pricing-grid">
+                <!-- Plan Gratuito -->
+                <div class="pricing-card">
+                    <div class="pricing-header">
+                        <div class="pricing-name">Gratuito</div>
+                        <div class="pricing-price">0 € <span>para siempre</span></div>
+                        <p class="pricing-desc">Todo lo esencial para empezar</p>
+                    </div>
+                    
+                    <ul class="pricing-features">
+                        <li>Configurador de vivienda</li>
+                        <li>Qué revisar en tu hogar</li>
+                        <li>Cuándo revisar cada cosa</li>
+                        <li>Coste estimado de cada tarea</li>
+                        <li>Checklist mensual y anual</li>
+                        <li>Nivel de prioridad (Bajo / Medio / Alto)</li>
+                    </ul>
+                    
+                    <a href="#empezar" class="btn btn-secondary">Empezar gratis</a>
+                    <p class="pricing-note">Incluye anuncios no invasivos</p>
+                </div>
+                
+                <!-- Plan PRO -->
+                <div class="pricing-card featured">
+                    <span class="pricing-badge">Recomendado</span>
+                    <div class="pricing-header">
+                        <div class="pricing-name">PRO</div>
+                        <div class="pricing-price">9,99 € <span>pago único</span></div>
+                        <p class="pricing-desc">Para quienes quieren ir un paso más allá</p>
+                    </div>
+                    
+                    <ul class="pricing-features">
+                        <li>Todo lo del plan Gratuito</li>
+                        <li>Recordatorios automáticos por email</li>
+                        <li>Historial simple de revisiones realizadas</li>
+                        <li>Sin anuncios</li>
+                    </ul>
+                    
+                    <a href="#" class="btn btn-primary">Obtener PRO por 9,99 €</a>
+                    <p class="pricing-note">Pago único · Sin suscripción</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- FAQ -->
+    <section class="section faq-section">
+        <div class="container">
+            <div class="section-header">
+                <span class="section-label">Preguntas frecuentes</span>
+                <h2>Resolvemos tus dudas</h2>
+            </div>
+            
+            <div class="faq-list">
+                <details class="faq-item">
+                    <summary class="faq-question">
+                        <span>¿Necesito saber de bricolaje para usar CasaEnOrden?</span>
+                        <svg class="faq-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
+                    </summary>
+                    <div class="faq-answer">
+                        <p>Para nada. CasaEnOrden está pensado para personas normales, no para profesionales. Te explicamos todo con palabras sencillas y sin tecnicismos. Si algo requiere un profesional, te lo indicamos claramente.</p>
+                    </div>
+                </details>
+                
+                <details class="faq-item">
+                    <summary class="faq-question">
+                        <span>¿Es realmente gratis?</span>
+                        <svg class="faq-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
+                    </summary>
+                    <div class="faq-answer">
+                        <p>Sí. La versión gratuita incluye todo lo esencial: el configurador, los checklists, los costes estimados y las prioridades. Solo mostramos algún anuncio no invasivo. Si quieres recordatorios por email y un historial de lo que has hecho, puedes pasar a PRO por 9,99 € (pago único, sin suscripción).</p>
+                    </div>
+                </details>
+                
+                <details class="faq-item">
+                    <summary class="faq-question">
+                        <span>¿Cada cuánto tiempo tengo que revisar cosas en casa?</span>
+                        <svg class="faq-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
+                    </summary>
+                    <div class="faq-answer">
+                        <p>Depende de cada cosa. Algunas tareas son mensuales (como revisar filtros), otras trimestrales o anuales. CasaEnOrden te organiza todo para que no tengas que pensarlo. Solo tienes que seguir tu checklist.</p>
+                    </div>
+                </details>
+                
+                <details class="faq-item">
+                    <summary class="faq-question">
+                        <span>¿Sirve si vivo de alquiler?</span>
+                        <svg class="faq-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
+                    </summary>
+                    <div class="faq-answer">
+                        <p>Sí. Aunque no seas propietario, hay cosas que te conviene vigilar para evitar problemas con la fianza o con el casero. Además, cuidar el piso donde vives es bueno para ti.</p>
+                    </div>
+                </details>
+                
+                <details class="faq-item">
+                    <summary class="faq-question">
+                        <span>¿Los precios que dais son exactos?</span>
+                        <svg class="faq-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
+                    </summary>
+                    <div class="faq-answer">
+                        <p>Son orientativos. Te damos una estimación para que tengas una idea de lo que puede costar, pero el precio final depende de tu zona, del profesional que contrates y del estado de tu vivienda.</p>
+                    </div>
+                </details>
+                
+                <details class="faq-item">
+                    <summary class="faq-question">
+                        <span>¿Puedo cancelar en cualquier momento?</span>
+                        <svg class="faq-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
+                    </summary>
+                    <div class="faq-answer">
+                        <p>No hay nada que cancelar. No tenemos suscripciones. Si compras PRO, es un pago único de 9,99 € y ya está. Si usas la versión gratuita, puedes dejar de usarla cuando quieras sin ningún compromiso.</p>
+                    </div>
+                </details>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA Final -->
+    <section class="section cta-final">
+        <div class="container">
+            <h2>Tu casa merece un poco de atención</h2>
+            <p>
+                Empieza hoy a tener el control de lo que necesita tu hogar. 
+                Es gratis, sencillo y puede ahorrarte muchos disgustos.
+            </p>
+            <a href="#empezar" class="btn btn-primary">Empezar gratis</a>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <p>© 2026 CasaEnOrden. Mantenimiento del hogar sencillo y preventivo.</p>
+            <div class="footer-links">
+                <a href="privacidad.html">Política de privacidad</a>
+                <a href="terminos.html">Términos de uso</a>
+                <a href="mailto:hola@casaenorden.es">Contacto</a>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Schema.org structured data for SEO -->
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "SoftwareApplication",
+        "name": "CasaEnOrden",
+        "applicationCategory": "UtilitiesApplication",
+        "operatingSystem": "Web",
+        "description": "Herramienta sencilla de mantenimiento preventivo del hogar. Evita averías y controla los gastos de tu vivienda.",
+        "offers": [
+            {
+                "@type": "Offer",
+                "price": "0",
+                "priceCurrency": "EUR",
+                "name": "Plan Gratuito"
+            },
+            {
+                "@type": "Offer",
+                "price": "9.99",
+                "priceCurrency": "EUR",
+                "name": "Plan PRO"
+            }
+        ]
+    }
+    </script>
+
+</body>
+</html>
